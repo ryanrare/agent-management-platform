@@ -3,16 +3,15 @@ import numpy as np
 from agents.models import Document
 from django.conf import settings
 
+
 class DocumentRetriever:
     def __init__(self, agent=None):
         self.agent = agent
         self.embedder = OpenAIEmbeddings(openai_api_key=settings.OPENAI_API_KEY)
 
     def search(self, query, top_k=5):
-        # gera embedding da query
         query_vector = self.embedder.embed_query(query)
 
-        # todos os documentos (podem ser filtrados por agente se quiser)
         docs_qs = Document.objects.all()
 
         results = []

@@ -79,12 +79,16 @@ WSGI_APPLICATION = 'agent_platform.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",  # ⚡ Muda para PostgreSQL
+        "NAME": os.getenv("POSTGRES_DB", "agentdb"),  # Nome do banco
+        "USER": os.getenv("POSTGRES_USER", "postgres"),  # Usuário
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),  # Senha
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),  # Host
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),  # Porta padrão
     }
 }
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "SEM KEY")
 
-OPENAI_API_KEY = ''
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

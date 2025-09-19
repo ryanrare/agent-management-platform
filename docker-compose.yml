@@ -12,20 +12,12 @@ services:
     env_file: .env
     depends_on:
       - db
-      - redis
-
   db:
     image: postgres:15
     container_name: agent_db
     environment:
       POSTGRES_DB: agentdb
-      POSTGRES_USER: agentusr
+      POSTGRES_USER: agentuser
       POSTGRES_PASSWORD: secret
     ports:
       - "5432:5432"
-
-  redis:
-    image: redis:7
-    container_name: agent_redis
-    ports:
-      - "6379:6379"

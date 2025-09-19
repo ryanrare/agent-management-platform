@@ -18,7 +18,7 @@ from django.urls import path
 from agents.views import (
     AgentListCreateAPIView,
     AgentDetailAPIView,
-    AgentExecuteAPIView
+    AgentExecuteAPIView, ExecutionListCreateAPIView, ExecutionDetailAPIView
 )
 from prompts.views import (
     PromptListCreateAPIView,
@@ -30,7 +30,9 @@ urlpatterns = [
     path("api/v1/agents/", AgentListCreateAPIView.as_view(), name="agent-list"),
     path("api/v1/agents/<int:pk>/", AgentDetailAPIView.as_view(), name="agent-detail"),
     path("api/v1/agents/<int:pk>/execute/", AgentExecuteAPIView.as_view(), name="agent-execute"),
-
+    # Executions
+    path('executions/', ExecutionListCreateAPIView.as_view(), name='execution-list-create'),
+    path('executions/<uuid:pk>/', ExecutionDetailAPIView.as_view(), name='execution-detail'),
     # Prompts
     path("api/v1/prompts/", PromptListCreateAPIView.as_view(), name="prompt-list"),
     path("api/v1/prompts/<int:pk>/", PromptDetailAPIView.as_view(), name="prompt-detail"),
