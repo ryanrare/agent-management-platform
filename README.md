@@ -1,3 +1,4 @@
+
 # 🤖 Agent Management Platform
 
 Plataforma de **Gestão de Agentes de IA** com orquestração de workflows usando **LangGraph**, RAG e suporte a múltiplos agentes especializados.
@@ -78,7 +79,6 @@ sudo docker compose exec web python manage.py migrate
 
 ```
 sudo docker compose exec web python manage.py crawl_docs --url "https://www.gutenberg.org/files/1342/1342-0.txt"
-
 ```
 
 ### Criar superusuário (opcional)
@@ -95,11 +95,11 @@ docker compose exec web python manage.py createsuperuser
 agent_platform/
   ├── serializers.py         # Serializers geral para APIS
   ├── settings.py            # Configuracoes do projeto
-  ├── urls.py
+  ├── urls.py                # Urls gerais do projeto(pode ser abstraido para cada pasta)
 agents/
   ├── management/commands/   # call_command (ex: crawl_docs) Extracao via bot RAG
   ├── models.py              # Agent, Document, Execution
-  ├── views.py               # APIs CRUD de Agents
+  ├── views.py               # APIs CRUD de Agents e Executions
   ├── services/orchestrator.py # LangGraph orchestrator
   ├── services/documents.py    # Busca semantica no RAG
 
@@ -116,56 +116,132 @@ requirements.txt
 
 ## 🧪 Comandos úteis dentro do container web
 
-Migrar banco:
-
+### Banco de dados
 ```
 python manage.py migrate
 ```
 
-Importar documentos externos (RAG) via call comand do Django (apenas .html e .txt):
-
+### Importar documentos externos (RAG)
 ```
 python manage.py crawl_docs --url "https://www.gutenberg.org/files/1342/1342-0.txt"
 ```
 
-CRUD de agentes:
+### Criar superusuário
+```
+python manage.py createsuperuser
 ```
 
-POST → /api/v1/agents/
+---
 
+## 📡 Endpoints da API
+
+### 🔹 Agents
+
+**Listar todos os agentes**
+```
+GET /api/v1/agents/
+```
+
+**Criar agente**
+```
+POST /api/v1/agents/
 {
   "name": "Research Assistant",
   "model": "gpt-4o-mini",
   "temperature": 0.7,
-  "prompt_id": 1
+  "config": {},
+  "prompt_id": "uuid-do-prompt"
 }
-
 ```
 
-CRUD de prompts:
+**Obter detalhes de um agente**
+```
+GET /api/v1/agents/{id}/
 ```
 
-POST → /api/v1/prompts/
+**Atualizar agente**
+```
+PUT /api/v1/agents/{id}/
+{
+  "name": "Updated Assistant",
+  "model": "gpt-4o-mini",
+  "temperature": 0.9,
+  "config": {},
+  "prompt_id": "uuid-do-prompt"
+}
+```
 
+**Deletar agente**
+```
+DELETE /api/v1/agents/{id}/
+```
+
+**Executar agente**
+```
+POST /api/v1/agents/{id}/execute/
+{
+  "input": "Qual a capital da França?"
+}
+```
+
+---
+
+### 🔹 Prompts
+
+**Listar prompts**
+```
+GET /api/v1/prompts/
+```
+
+**Criar prompt**
+```
+POST /api/v1/prompts/
 {
   "name": "Prompt Exemplo",
-  "description": "Prompt para teste",
   "content": "Olá, responda conforme as instruções..."
 }
-
 ```
 
-Executar agente:
+**Obter detalhes de um prompt**
+```
+GET /api/v1/prompts/{id}/
 ```
 
-POST → /api/v1/agents/{id}/execute/
-
+**Atualizar prompt**
+```
+PUT /api/v1/prompts/{id}/
 {
-  "name": "Prompt Exemplo",
-  "description": "Prompt para teste",
-  "content": "Olá, responda conforme as instruções..."
+  "name": "Prompt Atualizado",
+  "content": "Nova instrução..."
 }
+```
 
+**Deletar prompt**
+```
+DELETE /api/v1/prompts/{id}/
+```
+
+---
+
+### 🔹 Executions (Histórico de execuções)
+
+**Listar execuções**
+```
+GET /api/v1/executions/
+```
+
+**Criar execução (manual)**
+```
+POST /api/v1/executions/
+{
+  "agent_id": "uuid-do-agente",
+  "input": "Pergunta de teste"
+}
+```
+
+**Obter detalhes de uma execução**
+```
+GET /api/v1/executions/{id}/
 ```
 
 ---
